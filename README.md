@@ -1,16 +1,20 @@
 # JS加密工具
 
-[AES加密](https://github.com/tianjingli/js_encrypto/aes.html)
+[AES加密](https://tianjingli.github.io/js_encrypto/aes.html)
 
-[AES文件加密](https://github.com/tianjingli/js_encrypto/aes_file.html)
+[AES文件加密](https://tianjingli.github.io/js_encrypto/aes_file.html)
 
-[RSA加解密与签名工具](https://github.com/tianjingli/js_encrypto/rsa.html)
+[RSA加解密与签名工具](https://tianjingli.github.io/js_encrypto/rsa.html)
 
-[RSA公私钥生成工具](https://github.com/tianjingli/js_encrypto/rsa_keygen.html)
+[RSA公私钥生成工具](https://tianjingli.github.io/js_encrypto/rsa_keygen.html)
 
-[信息摘要工具](https://github.com/tianjingli/js_encrypto/md.html)
+[信息摘要工具](https://tianjingli.github.io/js_encrypto/md.html)
 
-[GitHub主页](https://github.com/tianjingli/js_encrypto)
+<hr/>
+
+[个人主页](https://tianjingli.github.io)
+
+[GitHub仓库](https://github.com/tianjingli/js_encrypto)
 
 ### 版权说明
 
