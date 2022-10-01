@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <p>输入：</p>
+    <p>
+      <textarea id="input" cols="50" rows="10"></textarea>
+    </p>
+    <p>密钥：<input type="text" id="key" /></p>
+    <p>
+      <button onclick="doEncrypt()">加密</button>
+      <button onclick="doDecrypt()">解密</button>
+    </p>
+    <p>输出：</p>
+    <p>
+      <textarea id="output" cols="50" rows="10"></textarea>
+    </p>
+    <script src="js/lib/crypto-js.min.js"></script>
+    <script src="js/aes.js"></script>
+    <script>
+      function doEncrypt() {
+        document.getElementById("output").value = aesStringEncrypt(
+          document.getElementById("key").value,
+          document.getElementById("input").value
+        );
+      }
+
+      function doDecrypt() {
+        document.getElementById("output").value = aesStringDecrypt(
+          document.getElementById("key").value,
+          document.getElementById("input").value
+        );
+      }
+    </script>
+  </body>
+</html>

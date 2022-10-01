@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+    <meta charset="UTF-8">
+    <title>RSA公私钥生成工具</title>
+</head>
+<body>
+<h1>RSA公私钥生成工具</h1>
+<hr/>
+<div>
+    <p>建议使用1024bit以上</p>
+    <select id="select_key_size" class="select">
+        <option value="512">512 bit</option>
+        <option value="1024" selected>1024 bit</option>
+        <option value="2048">2048 bit</option>
+        <option value="4096">4096 bit</option>
+    </select>
+    <button class="button primary" onclick="generateKey(this)">生成密钥</button>
+</div>
+<div>
+    <h3>私钥（不要外泄）</h3>
+    <textarea id="area_private_key" class="textarea mt1" cols="100" rows="15"></textarea>
+    <button id="button1" onclick="copy('button1','area_private_key')" onmouseout="this.innerHTML='双击复制'">双击复制</button>
+</div>
+<div>
+    <h3>公钥</h3>
+    <textarea id="area_public_key" class="textarea mt1" cols="100" rows="15"></textarea>
+    <button id="button2" onclick="copy('button2','area_public_key')" onmouseout="this.innerHTML='双击复制'">双击复制</button>
+</div>
+
+<script type="text/javascript" src="js/lib/jsencrypt.min.js"></script>
+<script type="text/javascript" src="js/lib/crypto-js.min.js"></script>
+<script type="text/javascript" src="js/lib/clipboard.min.js"></script>
+<script type="text/javascript">
+    function generateKey(btn) {
+        if (btn) {
+            btn.stopPropatation = true;
+            btn.cancelBubble = true;
+        }
+
+        let keySize = parseInt(document.getElementById('select_key_size').value);
+        let crypt = new JSEncrypt({default_key_size: keySize});
+        if (btn) btn.innerText = '正在生成...';
+
+        new Promise(function (resolve) {
+            setTimeout(function () {
+                resolve([crypt.getPrivateKey(), crypt.getPublicKey()]);
+            }, 50);
+        }).then(function (e) {
+            document.getElementById('area_private_key').value = e[0];
+            document.getElementById('area_public_key').value = e[1];
+            if (btn) btn.innerText = '生成密钥';
+        });
+    }
+</script>
+<script type="text/javascript">
+    function copy(btn_id, value_id) {
+        var btn = document.getElementById(btn_id);
+        var clipboard = new ClipboardJS(btn, {      //绑定元素id
+            text: function () {
+                var str = document.getElementById(value_id).value;
+                return str;
+            },
+        });
+        clipboard.on("success", function (e) {
+            btn.innerHTML = '已复制';
+        });
+        clipboard.on("error", function (e) {
+            alert(e);
+        });
+    }
+</script>
+</body>
+</html>

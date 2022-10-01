@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<p>
+    <label>密钥：</label>
+    <input id="key" type="text">
+</p>
+<input id="file" type="file">
+<button onclick="encryptFile()">加密</button>
+<button onclick="decryptFile()">解密</button>
+<img id="img" src="">
+
+<script src="js/lib/crypto-js.min.js"></script>
+<script src="js/aes.js"></script>
+<script>
+    var fileReader = new FileReader();
+
+    function encryptFile() {
+        const key = document.getElementById("key").value;
+        //获得文件列表，注意这里不是数组，而是对象
+        var fileList = document.getElementById('file').files;
+        if (!fileList.length) {
+            alert('请选择文件');
+            return;
+        }
+        if (!key.length) {
+            alert('请输入密钥');
+            return;
+        }
+        var file = fileList[0];
+        var fileOriginalName = file.name;
+        console.log(file);
+        // 将blob读取为ArrayBuffer
+        fileReader.readAsArrayBuffer(file);
+        fileReader.onload = function (e) {
+            const arrayBuffer = e.target.result;
+            const encData = aesFileEncrypt(key, arrayBuffer);
+            const fileBlob = new Blob([encData], {type: file.type});
+            download(fileBlob, fileOriginalName + '.aes.bin');
+        };
+    }
+
+    function decryptFile() {
+        const key = document.getElementById("key").value;
+        //获得文件列表，注意这里不是数组，而是对象
+        var fileList = document.getElementById('file').files;
+        if (!fileList.length) {
+            alert('请选择文件');
+            return;
+        }
+        if (!key.length) {
+            alert('请输入密钥');
+            return;
+        }
+        var file = fileList[0];
+        var fileOriginalName = file.name;
+        console.log(file);
+        // 将blob读取为二进制
+        fileReader.readAsArrayBuffer(file);
+        fileReader.onload = function (e) {
+            const arrayBuffer = e.target.result;
+            const decData = aesFileDecrypt(key, arrayBuffer);
+            const fileBlob = new Blob([decData], {type: file.type});
+            download(fileBlob, fileOriginalName.slice(0, fileOriginalName.length - '.aes.bin'.length));
+        };
+    }
+
+    function download(fileBlob, fileName) {
+        const a = document.createElement("a");
+        const url = window.URL.createObjectURL(fileBlob);
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        window.URL.revokeObjectURL(url);
+    }
+
+
+
+    // imgDecrypt("xxx",'123','img');
+
+    //加密图片解密
+    function imgDecrypt(img_url,key,img_id) {
+        console.log("img_url = "+img_url);
+        let xhr = new XMLHttpRequest();
+        xhr.open("get", img_url, true);
+        xhr.responseType = "blob";
+        xhr.onload = function () {
+            if (this.status == 200) {
+                var blob = this.response;
+                fileReader.readAsArrayBuffer(blob)
+                fileReader.onload = function (e) {
+                    const decData = aesFileDecrypt(key, e.target.result);
+                    const fileBlob = new Blob([decData], {type: "application/octet-stream"});
+                    document.getElementById(img_id).setAttribute('src',URL.createObjectURL(fileBlob));
+                };
+            }
+        };
+        xhr.send();
+    }
+
+</script>
+</body>
+</html>

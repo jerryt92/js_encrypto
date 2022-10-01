@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Document</title>
+</head>
+<body>
+<h1>信息摘要</h1>
+<input id="str1" type="text" placeholder="请输入文本"/>
+<!--<button class="btn" onclick="js_encrypto()">生成</button>-->
+<table>
+    <tr>
+        <td>MD5_16B =</td>
+        <td id="md5_16B_value"></td>
+    </tr>
+    <tr>
+        <td>MD5 =</td>
+        <td id="md5_value"></td>
+    </tr>
+    <tr>
+        <td>SHA1 =</td>
+        <td id="sha1_value"></td>
+    </tr>
+    <tr>
+        <td>SHA3 =</td>
+        <td id="sha3_value"></td>
+    </tr>
+    <tr>
+        <td>SHA224 =</td>
+        <td id="sha224_value"></td>
+    </tr>
+    <tr>
+        <td>SHA256 =</td>
+        <td id="sha256_value"></td>
+    </tr>
+    <tr>
+        <td>SHA384 =</td>
+        <td id="sha384_value"></td>
+    </tr>
+    <tr>
+        <td>SHA512 =</td>
+        <td id="sha512_value"></td>
+    </tr>
+</table>
+
+<script type="text/javascript" src="js/lib/crypto-js.min.js"></script>
+
+<script type="text/javascript">
+    document.getElementById('str1').onkeyup = function () {
+        encrypt();
+    };
+
+    function encrypt() {
+        let s = document.getElementById('str1').value;
+        if (s.length > 0) {
+            document.getElementById('md5_16B_value').innerText = ("" + CryptoJS.MD5(s)).slice(8, 24);
+            document.getElementById('md5_value').innerText = "" + CryptoJS.MD5(s);
+            document.getElementById('sha1_value').innerText = "" + CryptoJS.SHA1(s);
+            document.getElementById('sha3_value').innerText = "" + CryptoJS.SHA3(s);
+            document.getElementById('sha224_value').innerText = "" + CryptoJS.SHA224(s);
+            document.getElementById('sha256_value').innerText = "" + CryptoJS.SHA256(s);
+            document.getElementById('sha384_value').innerText = "" + CryptoJS.SHA384(s);
+            document.getElementById('sha512_value').innerText = "" + CryptoJS.SHA512(s);
+        } else {
+            document.getElementById('md5_value').innerText = "";
+            document.getElementById('sha1_value').innerText = "";
+            document.getElementById('sha256_value').innerText = "";
+            document.getElementById('sha512_value').innerText = "";
+        }
+    }
+</script>
+</body>
+</html>

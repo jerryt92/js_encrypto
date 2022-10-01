@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Document</title>
+</head>
+<body>
+<h1>文件信息摘要</h1>
+<input id="file" type="file" />
+<button class="btn" onclick="encryptFile()">生成</button>
+<table>
+    <tr>
+        <td>MD5_16B =</td>
+        <td id="md5_16B_value"></td>
+    </tr>
+    <tr>
+        <td>MD5 =</td>
+        <td id="md5_value"></td>
+    </tr>
+    <tr>
+        <td>SHA1 =</td>
+        <td id="sha1_value"></td>
+    </tr>
+    <tr>
+        <td>SHA3 =</td>
+        <td id="sha3_value"></td>
+    </tr>
+    <tr>
+        <td>SHA224 =</td>
+        <td id="sha224_value"></td>
+    </tr>
+    <tr>
+        <td>SHA256 =</td>
+        <td id="sha256_value"></td>
+    </tr>
+    <tr>
+        <td>SHA384 =</td>
+        <td id="sha384_value"></td>
+    </tr>
+    <tr>
+        <td>SHA512 =</td>
+        <td id="sha512_value"></td>
+    </tr>
+</table>
+<script type="text/javascript" src="js/lib/crypto-js.min.js"></script>
+<script type="text/javascript">
+
+    function encryptFile() {
+        //获得文件列表，注意这里不是数组，而是对象
+        var fileList = document.getElementById('file').files;
+        if (!fileList.length) {
+            alert('请选择文件');
+            return;
+        }
+        var file = fileList[0];
+        console.log(file);
+        // 将blob读取为二进制
+        let fileReader = new FileReader();
+        fileReader.readAsBinaryString(file);
+        fileReader.onload = function () {
+            const arrayBuffer = fileReader.result;
+            document.getElementById('md5_16B_value').innerHTML = ("" + CryptoJS.MD5(s)).slice(8, 24);
+            document.getElementById('md5_value').innerHTML = CryptoJS.MD5(arrayBuffer);
+            document.getElementById('sha1_value').innerHTML = CryptoJS.SHA1(arrayBuffer);
+            document.getElementById('sha3_value').innerHTML = CryptoJS.SHA3(arrayBuffer);
+            document.getElementById('sha224_value').innerHTML = CryptoJS.SHA224(arrayBuffer);
+            document.getElementById('sha256_value').innerHTML = CryptoJS.SHA256(arrayBuffer);
+            document.getElementById('sha384_value').innerHTML = CryptoJS.SHA384(arrayBuffer);
+            document.getElementById('sha512_value').innerHTML = CryptoJS.SHA512(arrayBuffer);
+        };
+    }
+
+    function arrayBufferToWordArray(arrayBuffer) {
+        const u8 = new Uint8Array(arrayBuffer, 0, arrayBuffer.byteLength);
+        const len = u8.length;
+        const words = [];
+        for (let i = 0; i < len; i += 1) {
+            words[i >>> 2] |= (u8[i] & 0xff) << (24 - (i % 4) * 8);
+        }
+        return CryptoJS.lib.WordArray.create(words, len);
+    }
+
+    function wordArrayToArrayBuffer(wordArray) {
+        const { words } = wordArray;
+        const { sigBytes } = wordArray;
+        const u8 = new Uint8Array(sigBytes);
+        for (let i = 0; i < sigBytes; i += 1) {
+            const byte = (words[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff;
+            u8[i] = byte;
+        }
+        return u8;
+    }
+</script>
+</body>
+</html>

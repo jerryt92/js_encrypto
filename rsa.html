@@ -1,0 +1,216 @@
+<html lang="zh_CN">
+<head>
+    <meta charset="UTF-8"/>
+    <title>RSA加解密与签名工具</title>
+</head>
+<body>
+<h1>
+    RSA加解密与签名工具
+</h1>
+<hr/>
+<h2>加密及签名</h2>
+<table>
+    <tr>
+        <td style="width: 400px;">
+            对方公钥
+        </td>
+        <td>
+            <textarea rows="5" cols="65" id="rsa_public_key" onkeyup="rsaEncrypt()"></textarea>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            你的私钥（用于签名，可不填）
+        </td>
+        <td>
+            <textarea rows="5" cols="65" id="sign_private_key" onkeyup="rsaSign();"></textarea>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            内容
+        </td>
+        <td>
+            <textarea rows="5" cols="65" id="message" onkeyup="rsaEncrypt();rsaSign();"></textarea>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            加密结果
+        </td>
+        <td>
+            <textarea rows="5" cols="65" id="encrypted">请输入公钥及内容</textarea>
+        </td>
+        <td>
+            <button id="button1" onclick="copy('button1','encrypted')" onmouseout="this.innerHTML='双击复制'">双击复制</button>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            签名值
+        </td>
+        <td>
+            <textarea rows="5" cols="65" id="signature">请输入私钥及内容</textarea>
+        </td>
+        <td>
+            <button id="button2" onclick="copy('button2','signature')" onmouseout="this.innerHTML='双击复制'">双击复制</button>
+        </td>
+    </tr>
+</table>
+<hr/>
+<h2>解密及验签</h2>
+<table>
+    <tr>
+        <td style="width: 400px;">
+            你的私钥
+        </td>
+        <td>
+            <textarea rows="5" cols="65" id="rsa_private_key" onkeyup="rsaDecrypt()"></textarea>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            对方公钥（用于验证签名，可不填）
+        </td>
+        <td>
+            <textarea rows="5" cols="65" id="sign_public_key" onkeyup="verifySignature();"></textarea>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            待解密内容
+        </td>
+        <td>
+            <textarea rows="5" cols="65" id="encrypted_value" onkeyup="rsaDecrypt();verifySignature()"></textarea>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            签名值
+        </td>
+        <td>
+            <textarea rows="5" cols="65" id="verify_signature" onkeyup="verifySignature();"></textarea>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            解密结果
+        </td>
+        <td>
+            <textarea rows="5" cols="65" id="decrypted">请输入私钥及内容</textarea>
+        </td>
+        <td>
+            <button id="button3" onclick="copy('button3','decrypted')" onmouseout="this.innerHTML='双击复制'">双击复制</button>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            验签结果
+        </td>
+        <td>
+            <div id="verify_output" style="color: red">验证失败</div>
+        </td>
+    </tr>
+</table>
+<script type="text/javascript" src="js/lib/jsencrypt.min.js"></script>
+<script type="text/javascript" src="js/lib/crypto-js.min.js"></script>
+<script type="text/javascript" src="js/lib/clipboard.min.js"></script>
+<script type="text/javascript">
+    function rsaEncrypt() {
+        var jsEncrypt = new JSEncrypt();
+        let publicKey = document.getElementById("rsa_public_key").value;
+        let message = document.getElementById("message").value;
+
+        if (message.length > 0 && publicKey.length > 0) {
+            jsEncrypt.setPublicKey(publicKey);
+            let encrypted = jsEncrypt.encrypt(message);
+            if (encrypted == false) {
+                document.getElementById("encrypted").innerHTML = '加密失败，请检查公钥是否正确';
+            } else {
+                document.getElementById("encrypted").innerHTML = encrypted + '\n----- 这是密文（复制不影响解密）-----';
+            }
+        } else {
+            document.getElementById("encrypted").innerHTML = "请输入公钥及内容";
+        }
+    }
+
+    function rsaSign() {
+        var jsEncrypt = new JSEncrypt();
+        let privateKey = document.getElementById("sign_private_key").value;
+        let message = document.getElementById("message").value;
+
+        if (message.length > 0 && privateKey.length > 0) {
+            jsEncrypt.setPrivateKey(privateKey);
+            let signature = jsEncrypt.sign(message, CryptoJS.SHA256, "sha256");
+            if (signature == false) {
+                document.getElementById("signature").innerHTML = '签名失败，请检查私钥是否正确';
+            } else {
+                document.getElementById("signature").innerHTML = signature + '\n----- 这是签名值（复制不影响解密）-----';
+            }
+        } else {
+            document.getElementById("signature").innerHTML = "请输入私钥及内容";
+        }
+    }
+
+    function rsaDecrypt() {
+        var jsEncrypt = new JSEncrypt();
+        let privateKey = document.getElementById("rsa_private_key").value;
+        let encrypted = document.getElementById("encrypted_value").value;
+        if (encrypted.length > 0 && privateKey.length > 0) {
+            jsEncrypt.setPrivateKey(privateKey);
+            let decrypted = jsEncrypt.decrypt(encrypted);
+            if (decrypted == false || decrypted == null) {
+                document.getElementById("decrypted").innerHTML = '解密失败，请检查私钥是否正确';
+            } else {
+                document.getElementById("decrypted").innerHTML = decrypted;
+            }
+        } else {
+            document.getElementById("decrypted").innerHTML = "请输入私钥及内容";
+        }
+    }
+
+    function verifySignature() {
+        var jsEncrypt = new JSEncrypt();
+        let publicKey = document.getElementById("sign_public_key").value;
+        let privateKey = document.getElementById("rsa_private_key").value;
+        let signature = document.getElementById("verify_signature").value;
+        let encrypted = document.getElementById("encrypted_value").value;
+        if (privateKey.length > 0 && encrypted.length > 0) {
+            jsEncrypt.setPrivateKey(privateKey);
+            let message = jsEncrypt.decrypt(encrypted);
+            if (publicKey.length > 0 && signature.length > 0) {
+                jsEncrypt.setPublicKey(publicKey);
+                var verified = jsEncrypt.verify(message, signature, CryptoJS.SHA256);
+                if (verified == true) {
+                    document.getElementById("verify_output").style.cssText = "color : green";
+                    document.getElementById("verify_output").innerHTML = "验证成功";
+                } else {
+                    document.getElementById("verify_output").style.cssText = "color : red";
+                    document.getElementById("verify_output").innerHTML = "验证失败";
+                }
+            }
+        } else {
+            document.getElementById("verify_output").style.cssText = "color : red";
+            document.getElementById("verify_output").innerHTML = "验证失败";
+        }
+    }
+
+    function copy(btn_id, value_id) {
+        var btn = document.getElementById(btn_id);
+        var clipboard = new ClipboardJS(btn, {      //绑定元素id
+            text: function () {
+                var str = document.getElementById(value_id).value;
+                return str;
+            },
+        });
+        clipboard.on("success", function (e) {
+            btn.innerHTML = '已复制';
+        });
+        clipboard.on("error", function (e) {
+            alert(e);
+        });
+    }
+</script>
+
+</body>
+</html>
