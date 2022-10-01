@@ -2,7 +2,7 @@
 
 [AES加密](https://tianjingli.github.io/js_encrypto/aes.html)
 
-[AES文件加密](https://tianjingli.github.io/js_encrypto/aes_file.html)
+[AES文件加密](https://tianjingli.github.io/js_encrypto/file_aes.html)
 
 [RSA加解密与签名工具](https://tianjingli.github.io/js_encrypto/rsa.html)
 
