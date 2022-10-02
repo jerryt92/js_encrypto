@@ -59,7 +59,7 @@
         var file = fileList[0];
         var fileOriginalName = file.name;
         console.log(file);
-        // 将blob读取为二进制
+        // 将blob读取为ArrayBuffer
         fileReader.readAsArrayBuffer(file);
         fileReader.onload = function (e) {
             const arrayBuffer = e.target.result;
