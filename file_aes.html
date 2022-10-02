@@ -35,8 +35,8 @@
         var fileOriginalName = file.name;
         // 将blob读取为ArrayBuffer
         fileReader.readAsArrayBuffer(file);
-        fileReader.onload = function (e) {
-            const arrayBuffer = e.target.result;
+        fileReader.onload = function () {
+            const arrayBuffer = fileReader.result;
             const encData = aesFileEncrypt(key, arrayBuffer);
             const fileBlob = new Blob([encData], {type: file.type});
             download(fileBlob, fileOriginalName + '.aes.bin');
@@ -59,8 +59,8 @@
         var fileOriginalName = file.name;
         // 将blob读取为ArrayBuffer
         fileReader.readAsArrayBuffer(file);
-        fileReader.onload = function (e) {
-            const arrayBuffer = e.target.result;
+        fileReader.onload = function () {
+            const arrayBuffer = fileReader.result;
             const decData = aesFileDecrypt(key, arrayBuffer);
             const fileBlob = new Blob([decData], {type: file.type});
             download(fileBlob, fileOriginalName.slice(0, fileOriginalName.length - '.aes.bin'.length));
