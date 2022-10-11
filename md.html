@@ -18,27 +18,23 @@
         <td id="md5_value"></td>
     </tr>
     <tr>
-        <td>SHA1 =</td>
+        <td>SHA-1 =</td>
         <td id="sha1_value"></td>
     </tr>
     <tr>
-        <td>SHA3 =</td>
-        <td id="sha3_value"></td>
-    </tr>
-    <tr>
-        <td>SHA224 =</td>
+        <td>SHA-224 =</td>
         <td id="sha224_value"></td>
     </tr>
     <tr>
-        <td>SHA256 =</td>
+        <td>SHA-256 =</td>
         <td id="sha256_value"></td>
     </tr>
     <tr>
-        <td>SHA384 =</td>
+        <td>SHA-384 =</td>
         <td id="sha384_value"></td>
     </tr>
     <tr>
-        <td>SHA512 =</td>
+        <td>SHA-512 =</td>
         <td id="sha512_value"></td>
     </tr>
 </table>
@@ -56,7 +52,6 @@
             document.getElementById('md5_16B_value').innerText = ("" + CryptoJS.MD5(s)).slice(8, 24);
             document.getElementById('md5_value').innerText = "" + CryptoJS.MD5(s);
             document.getElementById('sha1_value').innerText = "" + CryptoJS.SHA1(s);
-            document.getElementById('sha3_value').innerText = "" + CryptoJS.SHA3(s);
             document.getElementById('sha224_value').innerText = "" + CryptoJS.SHA224(s);
             document.getElementById('sha256_value').innerText = "" + CryptoJS.SHA256(s);
             document.getElementById('sha384_value').innerText = "" + CryptoJS.SHA384(s);
