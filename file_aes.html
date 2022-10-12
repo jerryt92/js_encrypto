@@ -37,7 +37,7 @@
         fileReader.readAsArrayBuffer(file);
         fileReader.onload = function () {
             const arrayBuffer = fileReader.result;
-            const encData = aesFileEncrypt(key, arrayBuffer);
+            const encData = aesFileEncrypt(""+CryptoJS.MD5(key), arrayBuffer);
             const fileBlob = new Blob([encData], {type: file.type});
             download(fileBlob, fileOriginalName + '.aes.bin');
         };
@@ -61,7 +61,7 @@
         fileReader.readAsArrayBuffer(file);
         fileReader.onload = function () {
             const arrayBuffer = fileReader.result;
-            const decData = aesFileDecrypt(key, arrayBuffer);
+            const decData = aesFileDecrypt(""+CryptoJS.MD5(key), arrayBuffer);
             const fileBlob = new Blob([decData], {type: file.type});
             download(fileBlob, fileOriginalName.slice(0, fileOriginalName.length - '.aes.bin'.length));
         };
@@ -91,7 +91,7 @@
                 var blob = this.response;
                 fileReader.readAsArrayBuffer(blob)
                 fileReader.onload = function (e) {
-                    const decData = aesFileDecrypt(key, e.target.result);
+                    const decData = aesFileDecrypt(""+CryptoJS.MD5(key), e.target.result);
                     const fileBlob = new Blob([decData], {type: "application/octet-stream"});
                     document.getElementById(img_id).setAttribute('src',URL.createObjectURL(fileBlob));
                 };

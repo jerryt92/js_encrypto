@@ -28,14 +28,14 @@
     <script>
       function doEncrypt() {
         document.getElementById("output").value = aesStringEncrypt(
-          document.getElementById("key").value,
+                ""+CryptoJS.MD5(document.getElementById("key").value),
           document.getElementById("input").value
         );
       }
 
       function doDecrypt() {
         document.getElementById("output").value = aesStringDecrypt(
-          document.getElementById("key").value,
+                ""+CryptoJS.MD5(document.getElementById("key").value),
           document.getElementById("input").value
         );
       }
