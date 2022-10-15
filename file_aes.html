@@ -5,22 +5,59 @@
     <title>AES文件加密 - tianjingli.github.io</title>
 </head>
 <body>
+<table>
+    <tr>
+        <td>
+            <input id="file" type="file">
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label>密钥：</label>
+            <input id="key" type="text">
+        </td>
+    </tr>
+    <tr>
+        <td>
+            密文编码（Base64可通过Java解密，但文件体积会增加30%）：
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <select id="select_encode" class="select">
+                <option value="b64">Base64</option>
+                <option value="wa">WordArray</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            加密模式：
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <select id="select_encrypt_mode" class="select">
+                <option value="aes256">AES-256</option>
+                <option value="aes128">AES-128</option>
+            </select>
+        </td>
+    </tr>
+</table>
 <p>
-    <label>密钥：</label>
-    <input id="key" type="text">
+    <button onclick="encryptFile()">加密</button>
+    <button onclick="decryptFile()">解密</button>
 </p>
-<input id="file" type="file">
-<button onclick="encryptFile()">加密</button>
-<button onclick="decryptFile()">解密</button>
-<img id="img" src="">
-
 <script src="js/lib/crypto-js.min.js"></script>
 <script src="js/aes.js"></script>
 <script>
     var fileReader = new FileReader();
 
     function encryptFile() {
-        const key = document.getElementById("key").value;
+        var encode = document.getElementById('select_encode').value;
+        var encryptMode = document.getElementById('select_encrypt_mode').value;
+        var key = document.getElementById("key").value;
+
         //获得文件列表，注意这里不是数组，而是对象
         var fileList = document.getElementById('file').files;
         if (!fileList.length) {
@@ -31,19 +68,111 @@
             alert('请输入密钥');
             return;
         }
+
+        if(encryptMode == 'aes256') {
+            // 取32位MD5作AES密钥
+            key = "" + CryptoJS.MD5(key);
+        } else if(encryptMode == 'aes128') {
+            // 取16位MD5作AES密钥
+            key = ("" + CryptoJS.MD5(key)).slice(8,24);
+        }
+
         var file = fileList[0];
         var fileOriginalName = file.name;
         // 将blob读取为ArrayBuffer
         fileReader.readAsArrayBuffer(file);
         fileReader.onload = function () {
-            const arrayBuffer = fileReader.result;
-            const encData = aesFileEncrypt(""+CryptoJS.MD5(key), arrayBuffer);
-            const fileBlob = new Blob([encData], {type: file.type});
-            download(fileBlob, fileOriginalName + '.aes.bin');
+            let arrayBuffer = fileReader.result;
+            let encData = null;
+            let fileBlob = null;
+            if(encode == 'b64') {
+                encData = aesEncrypt(key, arrayBufferToBase64(arrayBuffer));
+                fileBlob = new Blob([base64ToArrayBuffer(encData)], {type: file.type});
+                download(fileBlob, fileOriginalName + '.'+encode+'.'+encryptMode+'.bin');
+            } else if(encode == 'wa') {
+                encData = aesFileEncrypt(key, arrayBuffer);
+                fileBlob = new Blob([encData], {type: file.type});
+                download(fileBlob, fileOriginalName + '.'+encode+'.'+encryptMode+'.bin');
+            }
         };
     }
 
     function decryptFile() {
+        var encode = document.getElementById('select_encode').value;
+        var encryptMode = document.getElementById('select_encrypt_mode').value;
+        var key = document.getElementById("key").value;
+
+        //获得文件列表，注意这里不是数组，而是对象
+        var fileList = document.getElementById('file').files;
+        if (!fileList.length) {
+            alert('请选择文件');
+            return;
+        }
+        if (!key.length) {
+            alert('请输入密钥');
+            return;
+        }
+
+        if(encryptMode == 'aes256') {
+            // 取32位MD5作AES密钥
+            key = "" + CryptoJS.MD5(key);
+        } else if(encryptMode == 'aes128') {
+            // 取16位MD5作AES密钥
+            key = ("" + CryptoJS.MD5(key)).slice(8,24);
+        }
+        var file = fileList[0];
+        var fileOriginalName = file.name;
+        // 将blob读取为ArrayBuffer
+        fileReader.readAsArrayBuffer(file);
+        fileReader.onload = function () {
+            const arrayBuffer = fileReader.result;
+            if(encode == 'b64') {
+                try {
+                    encData = aesDecrypt(key, arrayBufferToBase64(arrayBuffer));
+                } catch (e) {
+                    alert('解密失败');
+                    return;
+                }
+                fileBlob = new Blob([base64ToArrayBuffer(encData)], {type: file.type});
+                download(fileBlob, fileOriginalName.slice(0, fileOriginalName.length - ('.'+encode+'.'+encryptMode+'.bin').length))
+            } else if(encode == 'wa') {
+                encData = aesFileDecrypt(key, arrayBuffer);
+                try {
+                    fileBlob = new Blob([encData], {type: file.type});
+                } catch (e) {
+                    alert('解密失败');
+                    return;
+                }
+                download(fileBlob, fileOriginalName.slice(0, fileOriginalName.length - ('.'+encode+'.'+encryptMode+'.bin').length));
+            }
+        };
+    }
+
+    function encryptFileBase64() {
+        const key = document.getElementById("key").value;
+        //获得文件列表，注意这里不是数组，而是对象
+        var fileList = document.getElementById('file').files;
+        if (!fileList.length) {
+            alert('请选择文件');
+            return;
+        }
+        if (!key.length) {
+            alert('请输入密钥');
+            return;
+        }
+        var file = fileList[0];
+        var fileOriginalName = file.name;
+        // 将blob读取为ArrayBuffer
+        fileReader.readAsArrayBuffer(file);
+        fileReader.onload = function () {
+            let arrayBuffer = fileReader.result;
+            let encData = aesEncrypt("" + CryptoJS.MD5(key), arrayBufferToBase64(arrayBuffer));
+            let fileBlob = new Blob([base64ToArrayBuffer(encData)], {type: file.type});
+            download(fileBlob, fileOriginalName + '.aes_base64.bin');
+        };
+    }
+
+    function decryptFileBase64() {
         const key = document.getElementById("key").value;
         //获得文件列表，注意这里不是数组，而是对象
         var fileList = document.getElementById('file').files;
@@ -61,9 +190,9 @@
         fileReader.readAsArrayBuffer(file);
         fileReader.onload = function () {
             const arrayBuffer = fileReader.result;
-            const decData = aesFileDecrypt(""+CryptoJS.MD5(key), arrayBuffer);
-            const fileBlob = new Blob([decData], {type: file.type});
-            download(fileBlob, fileOriginalName.slice(0, fileOriginalName.length - '.aes.bin'.length));
+            const decData = aesDecrypt("" + CryptoJS.MD5(key), arrayBufferToBase64(arrayBuffer));
+            const fileBlob = new Blob([base64ToArrayBuffer(decData)], {type: file.type});
+            download(fileBlob, fileOriginalName.slice(0, fileOriginalName.length - '.aes_base64.bin'.length));
         };
     }
 
@@ -75,31 +204,6 @@
         a.click();
         window.URL.revokeObjectURL(url);
     }
-
-
-
-    // imgDecrypt("xxx",'123','img');
-
-    //加密图片解密
-    function imgDecrypt(img_url,key,img_id) {
-        console.log("img_url = "+img_url);
-        let xhr = new XMLHttpRequest();
-        xhr.open("get", img_url, true);
-        xhr.responseType = "blob";
-        xhr.onload = function () {
-            if (this.status == 200) {
-                var blob = this.response;
-                fileReader.readAsArrayBuffer(blob)
-                fileReader.onload = function (e) {
-                    const decData = aesFileDecrypt(""+CryptoJS.MD5(key), e.target.result);
-                    const fileBlob = new Blob([decData], {type: "application/octet-stream"});
-                    document.getElementById(img_id).setAttribute('src',URL.createObjectURL(fileBlob));
-                };
-            }
-        };
-        xhr.send();
-    }
-
 </script>
 </body>
 </html>
