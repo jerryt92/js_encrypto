@@ -11,7 +11,7 @@ const mode = {
 // AES字符串加密
 
 // 加密方法
-function aesEncrypt(key, data) {
+function aesEncryptBase64(key, data) {
     // CryptoJS.MD5必须转为字符串！
     key = CryptoJS.enc.Utf8.parse(key);
     let srcs = CryptoJS.enc.Utf8.parse(data);
@@ -19,13 +19,31 @@ function aesEncrypt(key, data) {
     return CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
 }
 // 解密方法
-function aesDecrypt(key, data) {
+function aesDecryptBase64(key, data) {
     // CryptoJS.MD5必须转为字符串！
     key = CryptoJS.enc.Utf8.parse(key);
     let encryptedHexStr = CryptoJS.enc.Base64.parse(data);
     let srcs = CryptoJS.enc.Base64.stringify(encryptedHexStr);
     let decrypt = CryptoJS.AES.decrypt(srcs, key, mode);
     return decrypt.toString(CryptoJS.enc.Utf8);
+}
+// 加密方法
+function aesEncryptHex(key, data) {
+    key = CryptoJS.enc.Utf8.parse(key);
+    let encrypted = CryptoJS.AES.encrypt(data, key, mode);
+    let cipherText = encrypted.toString();
+    cipherText = CryptoJS.enc.Hex.stringify(CryptoJS.enc.Base64.parse(cipherText));
+    return cipherText;
+}
+// 解密方法
+function aesDecryptHex(key, data) {
+    let cipherText;
+    cipherText = CryptoJS.enc.Hex.parse(data)
+    key = CryptoJS.enc.Utf8.parse(key);
+    let decrypted = CryptoJS.AES.decrypt({
+        ciphertext: cipherText
+    }, key, mode);
+    return decrypted.toString(CryptoJS.enc.Utf8);
 }
 
 // AES文件加密
