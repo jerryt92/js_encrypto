@@ -87,11 +87,11 @@
             let fileBlob = null;
             if(encode == 'b64') {
                 encData = aesEncryptBase64(key, arrayBufferToBase64(arrayBuffer));
-                fileBlob = new Blob([base64ToArrayBuffer(encData)], {type: file.type});
+                fileBlob = new Blob([base64ToArrayBuffer(encData)]);
                 download(fileBlob, fileOriginalName + '.'+encode+'.'+encryptMode+'.bin');
             } else if(encode == 'wa') {
                 encData = aesFileEncrypt(key, arrayBuffer);
-                fileBlob = new Blob([encData], {type: file.type});
+                fileBlob = new Blob([encData]);
                 download(fileBlob, fileOriginalName + '.'+encode+'.'+encryptMode+'.bin');
             }
         };
@@ -133,12 +133,12 @@
                     alert('解密失败');
                     return;
                 }
-                fileBlob = new Blob([base64ToArrayBuffer(encData)], {type: file.type});
+                fileBlob = new Blob([base64ToArrayBuffer(encData)]);
                 download(fileBlob, fileOriginalName.slice(0, fileOriginalName.length - ('.'+encode+'.'+encryptMode+'.bin').length))
             } else if(encode == 'wa') {
                 encData = aesFileDecrypt(key, arrayBuffer);
                 try {
-                    fileBlob = new Blob([encData], {type: file.type});
+                    fileBlob = new Blob([encData]);
                 } catch (e) {
                     alert('解密失败');
                     return;
