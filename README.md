@@ -1,20 +1,20 @@
 # JS加密工具
 
-[AES加密](https://tianjingli.github.io/js_encrypto/aes.html)
+[AES加密](https://jerryt92.github.io/js_encrypto/aes.html)
 
-[AES文件加密](https://tianjingli.github.io/js_encrypto/file_aes.html)
+[AES文件加密](https://jerryt92.github.io/js_encrypto/file_aes.html)
 
-[RSA加解密与签名工具](https://tianjingli.github.io/js_encrypto/rsa.html)
+[RSA加解密与签名工具](https://jerryt92.github.io/js_encrypto/rsa.html)
 
-[RSA公私钥生成工具](https://tianjingli.github.io/js_encrypto/rsa_keygen.html)
+[RSA公私钥生成工具](https://jerryt92.github.io/js_encrypto/rsa_keygen.html)
 
-[信息摘要工具](https://tianjingli.github.io/js_encrypto/md.html)
+[信息摘要工具](https://jerryt92.github.io/js_encrypto/md.html)
 
 <hr/>
 
-[个人主页](https://tianjingli.github.io)
+[个人主页](https://jerryt92.github.io)
 
-[GitHub仓库](https://github.com/tianjingli/js_encrypto)
+[GitHub仓库](https://github.com/jerryt92/js_encrypto)
 
 ### 版权说明
 
