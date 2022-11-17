@@ -42,7 +42,7 @@
             <textarea rows="5" cols="65" id="encrypted">请输入公钥及内容</textarea>
         </td>
         <td>
-            <button id="button1" onclick="copy('button1','encrypted')" onmouseout="this.innerHTML='双击复制'">双击复制</button>
+            <button id="button1" onclick="copy('button1','encrypted')" onmouseout="this.innerHTML='一键复制'">一键复制</button>
         </td>
     </tr>
     <tr>
@@ -53,7 +53,7 @@
             <textarea rows="5" cols="65" id="signature">请输入私钥及内容</textarea>
         </td>
         <td>
-            <button id="button2" onclick="copy('button2','signature')" onmouseout="this.innerHTML='双击复制'">双击复制</button>
+            <button id="button2" onclick="copy('button2','signature')" onmouseout="this.innerHTML='一键复制'">一键复制</button>
         </td>
     </tr>
 </table>
@@ -100,7 +100,7 @@
             <textarea rows="5" cols="65" id="decrypted">请输入私钥及内容</textarea>
         </td>
         <td>
-            <button id="button3" onclick="copy('button3','decrypted')" onmouseout="this.innerHTML='双击复制'">双击复制</button>
+            <button id="button3" onclick="copy('button3','decrypted')" onmouseout="this.innerHTML='一键复制'">一键复制</button>
         </td>
     </tr>
     <tr>
@@ -196,19 +196,16 @@
     }
 
     function copy(btn_id, value_id) {
-        var btn = document.getElementById(btn_id);
-        var clipboard = new ClipboardJS(btn, {      //绑定元素id
-            text: function () {
-                var str = document.getElementById(value_id).value;
-                return str;
-            },
-        });
-        clipboard.on("success", function (e) {
-            btn.innerHTML = '已复制';
-        });
-        clipboard.on("error", function (e) {
-            alert(e);
-        });
+        navigator.clipboard.writeText(document.getElementById(value_id).value)
+            .then(
+                function () {
+                    console.log('复制成功');
+                    document.getElementById(btn_id).innerHTML = '已复制';
+                }, function (e) {
+                    console.log(e);
+                    console.log('复制失败');
+                    alert(e);
+                });
     }
 </script>
 

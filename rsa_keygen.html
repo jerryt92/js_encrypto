@@ -20,12 +20,14 @@
 <div>
     <h3>私钥（不要外泄）</h3>
     <textarea id="area_private_key" class="textarea mt1" cols="100" rows="15"></textarea>
-    <button id="button1" onclick="copy('button1','area_private_key')" onmouseout="this.innerHTML='双击复制'">双击复制</button>
+    <button id="button1" onclick="copy('button1','area_private_key')" onmouseout="this.innerHTML='一键复制'">一键复制
+    </button>
 </div>
 <div>
     <h3>公钥</h3>
     <textarea id="area_public_key" class="textarea mt1" cols="100" rows="15"></textarea>
-    <button id="button2" onclick="copy('button2','area_public_key')" onmouseout="this.innerHTML='双击复制'">双击复制</button>
+    <button id="button2" onclick="copy('button2','area_public_key')" onmouseout="this.innerHTML='一键复制'">一键复制
+    </button>
 </div>
 
 <script type="text/javascript" src="js/lib/jsencrypt.min.js"></script>
@@ -55,19 +57,16 @@
 </script>
 <script type="text/javascript">
     function copy(btn_id, value_id) {
-        var btn = document.getElementById(btn_id);
-        var clipboard = new ClipboardJS(btn, {      //绑定元素id
-            text: function () {
-                var str = document.getElementById(value_id).value;
-                return str;
-            },
-        });
-        clipboard.on("success", function (e) {
-            btn.innerHTML = '已复制';
-        });
-        clipboard.on("error", function (e) {
-            alert(e);
-        });
+        navigator.clipboard.writeText(document.getElementById(value_id).value)
+            .then(
+                function () {
+                    console.log('复制成功');
+                    document.getElementById(btn_id).innerHTML = '已复制';
+                }, function (e) {
+                    console.log(e);
+                    console.log('复制失败');
+                    alert(e);
+                });
     }
 </script>
 </body>
