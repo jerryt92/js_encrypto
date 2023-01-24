@@ -19,19 +19,6 @@
     </tr>
     <tr>
         <td>
-            密文编码（Base64可通过Java解密，但文件体积会增加30%）：
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <select id="select_encode" class="select">
-                <option value="b64">Base64</option>
-                <option value="wa">WordArray</option>
-            </select>
-        </td>
-    </tr>
-    <tr>
-        <td>
             加密模式：
         </td>
     </tr>
@@ -54,7 +41,6 @@
     var fileReader = new FileReader();
 
     function encryptFile() {
-        var encode = document.getElementById('select_encode').value;
         var encryptMode = document.getElementById('select_encrypt_mode').value;
         var key = document.getElementById("key").value;
 
@@ -69,12 +55,12 @@
             return;
         }
 
-        if(encryptMode == 'aes256') {
+        if (encryptMode == 'aes256') {
             // 取32位MD5作AES密钥
             key = "" + CryptoJS.MD5(key);
-        } else if(encryptMode == 'aes128') {
+        } else if (encryptMode == 'aes128') {
             // 取16位MD5作AES密钥
-            key = ("" + CryptoJS.MD5(key)).slice(8,24);
+            key = ("" + CryptoJS.MD5(key)).slice(8, 24);
         }
 
         var file = fileList[0];
@@ -85,20 +71,13 @@
             let arrayBuffer = fileReader.result;
             let encData = null;
             let fileBlob = null;
-            if(encode == 'b64') {
-                encData = aesEncryptBase64(key, arrayBufferToBase64(arrayBuffer));
-                fileBlob = new Blob([base64ToArrayBuffer(encData)]);
-                download(fileBlob, fileOriginalName + '.'+encode+'.'+encryptMode+'.bin');
-            } else if(encode == 'wa') {
-                encData = aesFileEncrypt(key, arrayBuffer);
-                fileBlob = new Blob([encData]);
-                download(fileBlob, fileOriginalName + '.'+encode+'.'+encryptMode+'.bin');
-            }
+            encData = aesFileEncrypt(key, arrayBuffer);
+            fileBlob = new Blob([encData]);
+            download(fileBlob, fileOriginalName + '.' + encryptMode + '.bin');
         };
     }
 
     function decryptFile() {
-        var encode = document.getElementById('select_encode').value;
         var encryptMode = document.getElementById('select_encrypt_mode').value;
         var key = document.getElementById("key").value;
 
@@ -113,12 +92,12 @@
             return;
         }
 
-        if(encryptMode == 'aes256') {
+        if (encryptMode == 'aes256') {
             // 取32位MD5作AES密钥
             key = "" + CryptoJS.MD5(key);
-        } else if(encryptMode == 'aes128') {
+        } else if (encryptMode == 'aes128') {
             // 取16位MD5作AES密钥
-            key = ("" + CryptoJS.MD5(key)).slice(8,24);
+            key = ("" + CryptoJS.MD5(key)).slice(8, 24);
         }
         var file = fileList[0];
         var fileOriginalName = file.name;
@@ -126,25 +105,14 @@
         fileReader.readAsArrayBuffer(file);
         fileReader.onload = function () {
             const arrayBuffer = fileReader.result;
-            if(encode == 'b64') {
-                try {
-                    encData = aesDecryptBase64(key, arrayBufferToBase64(arrayBuffer));
-                } catch (e) {
-                    alert('解密失败');
-                    return;
-                }
-                fileBlob = new Blob([base64ToArrayBuffer(encData)]);
-                download(fileBlob, fileOriginalName.slice(0, fileOriginalName.length - ('.'+encode+'.'+encryptMode+'.bin').length))
-            } else if(encode == 'wa') {
-                encData = aesFileDecrypt(key, arrayBuffer);
-                try {
-                    fileBlob = new Blob([encData]);
-                } catch (e) {
-                    alert('解密失败');
-                    return;
-                }
-                download(fileBlob, fileOriginalName.slice(0, fileOriginalName.length - ('.'+encode+'.'+encryptMode+'.bin').length));
+            encData = aesFileDecrypt(key, arrayBuffer);
+            try {
+                fileBlob = new Blob([encData]);
+            } catch (e) {
+                alert('解密失败');
+                return;
             }
+            download(fileBlob, fileOriginalName.slice(0, fileOriginalName.length - ('.' + encryptMode + '.bin').length));
         };
     }
 
