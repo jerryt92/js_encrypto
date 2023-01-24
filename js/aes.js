@@ -72,7 +72,7 @@ function arrayBufferToWordArray(arrayBuffer) {
     const len = bytes.length;
     const words = [];
     for (let i = 0; i < len; i += 1) {
-        words[i >>> 2] |= (u8[i] & 0xff) << (24 - (i % 4) * 8);
+        words[i >>> 2] |= (bytes[i] & 0xff) << (24 - (i % 4) * 8);
     }
     return CryptoJS.lib.WordArray.create(words, len);
 }
@@ -91,7 +91,7 @@ function wordArrayToArrayBuffer(wordArray) {
 function arrayBufferToBinaryString(arrayBuffer) {
     //第一步，将ArrayBuffer转为二进制字符串
     var binaryString = '';
-    var bytes = new Int8Array(arrayBuffer);
+    var bytes = new Uint8Array(arrayBuffer);
     for (var len = bytes.byteLength, i = 0; i < len; i++) {
         binaryString += String.fromCharCode(bytes[i]);
     }
@@ -100,7 +100,7 @@ function arrayBufferToBinaryString(arrayBuffer) {
 
 function binaryStringToArrayBuffer(binaryString) {
     var len = binaryString.length;
-    var bytes = new Int8Array(len);
+    var bytes = new Uint8Array(len);
     for (var i = 0; i < len; i++) {
         bytes[i] = binaryString.charCodeAt(i);
     }
@@ -110,7 +110,7 @@ function binaryStringToArrayBuffer(binaryString) {
 function arrayBufferToBase64(arrayBuffer) {
     //第一步，将ArrayBuffer转为二进制字符串
     var binaryString = '';
-    var bytes = new Int8Array(arrayBuffer);
+    var bytes = new Uint8Array(arrayBuffer);
     for (var len = bytes.byteLength, i = 0; i < len; i++) {
         binaryString += String.fromCharCode(bytes[i]);
     }
@@ -120,7 +120,7 @@ function arrayBufferToBase64(arrayBuffer) {
 function base64ToArrayBuffer(base64) {
     var binary_string = window.atob(base64);
     var len = binary_string.length;
-    var bytes = new Int8Array(len);
+    var bytes = new Uint8Array(len);
     for (var i = 0; i < len; i++) {
         bytes[i] = binary_string.charCodeAt(i);
     }
