@@ -109,7 +109,7 @@
             try {
                 fileBlob = new Blob([encData]);
             } catch (e) {
-                alert('解密失败');
+                alert('失败');
                 return;
             }
             download(fileBlob, fileOriginalName.slice(0, fileOriginalName.length - ('.' + encryptMode + '.bin').length));

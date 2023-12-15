@@ -27,15 +27,15 @@
     <script src="js/aes.js"></script>
     <script>
       function doEncrypt() {
-        document.getElementById("output").value = aesEncryptBase64(
-                ""+CryptoJS.MD5(document.getElementById("key").value),
+        document.getElementById("output").value = aesEncrypt(
+                document.getElementById("key").value,
           document.getElementById("input").value
         );
       }
 
       function doDecrypt() {
-        document.getElementById("output").value = aesDecryptBase64(
-                ""+CryptoJS.MD5(document.getElementById("key").value),
+        document.getElementById("output").value = aesDecrypt(
+               document.getElementById("key").value,
           document.getElementById("input").value
         );
       }
