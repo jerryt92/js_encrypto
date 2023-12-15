@@ -1,4 +1,4 @@
-// 依赖crypto-js
+// 依赖crypto-js v4.2.0
 // https://github.com/jerryt92/js_encrypto - 2022/10/1
 
 // AES加密模式配置
