@@ -31,7 +31,7 @@ function aesEncrypt(cipher, data) {
     if (dataEncode.toLowerCase() == "base64") {
         return CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
     } else if (dataEncode.toLowerCase() == "hex") {
-        return CryptoJS.enc.Hex.stringify(CryptoJS.enc.Base64.parse(encrypted.toString()));
+        return CryptoJS.enc.Hex.stringify(encrypted.ciphertext);
     } else {
         throw new Error("Unsupport data encode: " + dataEncode);
     }
